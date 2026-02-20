@@ -1,0 +1,36 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+**/.env
+.env.local
+**/.env.local
+
+# Build artifacts
+dist/
+build/
+**/build/
+DerivedData/
+ios/build/
+android/build/
+
+# Logs
+*.log
+**/*.log
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# Temporary files
+.metro-health-check*
+tmp/
+
+# CocoaPods
+**/Pods/
+
+# Idea
+.idea/
+.vscode/
