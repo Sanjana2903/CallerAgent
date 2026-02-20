@@ -8,11 +8,14 @@ export const socketService = {
         if (socket?.connected) return socket;
 
         socket = io(SOCKET_URL, {
-            transports: ['websocket'],
+            transports: ['polling', 'websocket'], // Allow polling fallback
             autoConnect: true,
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionAttempts: 10,
+            extraHeaders: {
+                'ngrok-skip-browser-warning': 'true',
+            },
         });
 
         socket.on('connect', () => {

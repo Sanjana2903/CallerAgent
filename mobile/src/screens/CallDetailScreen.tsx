@@ -83,20 +83,23 @@ export default function CallDetailScreen({ route, navigation }: any) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {/* Header Section */}
                 <View style={styles.header}>
-                    <View style={[styles.intentIcon, { backgroundColor: config.color + '20' }]}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+                        <Text style={styles.backEmoji}>←</Text>
+                    </TouchableOpacity>
+                    <View style={[styles.intentIcon, { backgroundColor: config.color + '15' }]}>
                         <Text style={styles.emoji}>{config.emoji}</Text>
                     </View>
                     <Text style={styles.callerName}>{call.callerName || call.callerNumber}</Text>
                     {call.callerName && <Text style={styles.callerNumber}>{call.callerNumber}</Text>}
 
                     <View style={styles.badgeRow}>
-                        <View style={[styles.badge, { backgroundColor: config.color + '33' }]}>
+                        <View style={[styles.badge, { backgroundColor: config.color + '25' }]}>
                             <Text style={[styles.badgeText, { color: config.color }]}>{config.label}</Text>
                         </View>
-                        <View style={[styles.badge, { backgroundColor: sentimentColor + '33' }]}>
+                        <View style={[styles.badge, { backgroundColor: sentimentColor + '25' }]}>
                             <Text style={[styles.badgeText, { color: sentimentColor }]}>
                                 {call.analysis?.sentiment?.toUpperCase() || 'NEUTRAL'}
                             </Text>
@@ -104,49 +107,52 @@ export default function CallDetailScreen({ route, navigation }: any) {
                     </View>
                 </View>
 
-                {/* AI Summary */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>AI Summary</Text>
-                    <View style={styles.summaryBox}>
-                        <Text style={styles.summaryText}>{call.analysis?.summary || 'No summary available'}</Text>
-                        {call.analysis?.actionTaken && (
-                            <View style={styles.actionBox}>
-                                <Text style={styles.actionLabel}>AI ACTION TAKEN:</Text>
-                                <Text style={styles.actionText}>{call.analysis.actionTaken}</Text>
-                            </View>
-                        )}
+                {/* AI Summary Card */}
+                <View style={styles.card}>
+                    <View style={styles.cardHeader}>
+                        <Text style={styles.cardTitle}>Assistant Summary</Text>
+                        <View style={styles.dot} />
+                        <Text style={styles.durationText}>{Math.round(call.durationSeconds || 0)}s call</Text>
                     </View>
+                    <Text style={styles.summaryText}>{call.analysis?.summary || 'The AI successfully handled this conversation.'}</Text>
+                    {call.analysis?.actionTaken && (
+                        <View style={styles.actionBox}>
+                            <Text style={styles.actionLabel}>AUTOMATED ACTION:</Text>
+                            <Text style={styles.actionText}>{call.analysis.actionTaken}</Text>
+                        </View>
+                    )}
                 </View>
 
-                {/* Call Info */}
-                <View style={styles.infoGrid}>
-                    <View style={styles.infoItem}>
-                        <Text style={styles.infoLabel}>Time</Text>
-                        <Text style={styles.infoValue}>
-                            {new Date(call.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </Text>
-                    </View>
-                    <View style={styles.infoItem}>
-                        <Text style={styles.infoLabel}>Duration</Text>
-                        <Text style={styles.infoValue}>{Math.round(call.durationSeconds || 0)}s</Text>
-                    </View>
-                </View>
-
-                {/* Transcript */}
+                {/* Transcript Section */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Full Transcript</Text>
+                    <Text style={styles.sectionTitle}>Conversation History</Text>
                     <View style={styles.transcriptContainer}>
                         {call.transcript && call.transcript.length > 0 ? (
                             call.transcript.map((entry: TranscriptEntry, index: number) => (
-                                <View key={index} style={styles.transcriptEntry}>
-                                    <Text style={[styles.roleLabel, entry.role === 'ai' ? styles.aiRole : styles.callerRole]}>
-                                        {entry.role === 'ai' ? 'RINGIA' : 'CALLER'}
+                                <View key={index} style={[
+                                    styles.bubbleWrapper,
+                                    entry.role === 'ai' ? styles.aiWrapper : styles.callerWrapper
+                                ]}>
+                                    <View style={[
+                                        styles.bubble,
+                                        entry.role === 'ai' ? styles.aiBubble : styles.callerBubble
+                                    ]}>
+                                        <Text style={[
+                                            styles.transcriptText,
+                                            entry.role === 'ai' ? styles.aiText : styles.callerText
+                                        ]}>
+                                            {entry.content}
+                                        </Text>
+                                    </View>
+                                    <Text style={styles.roleLabel}>
+                                        {entry.role === 'ai' ? 'Ringia' : (call.callerName || 'Caller')}
                                     </Text>
-                                    <Text style={styles.transcriptText}>{entry.content}</Text>
                                 </View>
                             ))
                         ) : (
-                            <Text style={styles.emptyText}>No transcript available</Text>
+                            <View style={styles.emptyTranscript}>
+                                <Text style={styles.emptyText}>No transcript generated for this call.</Text>
+                            </View>
                         )}
                     </View>
                 </View>
@@ -154,10 +160,10 @@ export default function CallDetailScreen({ route, navigation }: any) {
                 {/* Action Buttons */}
                 <View style={styles.footerActions}>
                     <TouchableOpacity style={styles.shareBtn} onPress={handleShare}>
-                        <Text style={styles.btnText}>Share Summary</Text>
+                        <Text style={styles.btnText}>Share Insights</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
-                        <Text style={styles.deleteBtnText}>Delete Record</Text>
+                        <Text style={styles.deleteBtnText}>Delete Log permanently</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -166,41 +172,50 @@ export default function CallDetailScreen({ route, navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#0D0D1A' },
-    centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0D0D1A' },
-    scrollContent: { padding: 20 },
-    header: { alignItems: 'center', marginBottom: 30 },
+    container: { flex: 1, backgroundColor: '#070712' },
+    centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#070712' },
+    scrollContent: { padding: 24 },
+    backBtn: { alignSelf: 'flex-start', marginBottom: 10 },
+    backEmoji: { fontSize: 28, color: '#6C5CE7' },
+    header: { alignItems: 'center', marginBottom: 32 },
     intentIcon: {
-        width: 80, height: 80, borderRadius: 40,
+        width: 88, height: 88, borderRadius: 24,
         justifyContent: 'center', alignItems: 'center', marginBottom: 16,
+        borderWidth: 1, borderColor: '#1E1E35'
     },
-    emoji: { fontSize: 40 },
-    callerName: { fontSize: 24, fontWeight: '700', color: '#FFF', marginBottom: 4 },
-    callerNumber: { fontSize: 14, color: '#888', marginBottom: 12 },
-    badgeRow: { flexDirection: 'row', gap: 8 },
-    badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12 },
-    badgeText: { fontSize: 11, fontWeight: '700' },
-    section: { marginBottom: 24 },
-    sectionTitle: { fontSize: 18, fontWeight: '700', color: '#FFF', marginBottom: 12 },
-    summaryBox: { backgroundColor: '#16162A', borderRadius: 16, padding: 16 },
-    summaryText: { fontSize: 16, color: '#DDD', lineHeight: 24 },
-    actionBox: { marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#2A2A40' },
-    actionLabel: { fontSize: 11, color: '#6C5CE7', fontWeight: '800', marginBottom: 4 },
-    actionText: { fontSize: 14, color: '#BBB' },
-    infoGrid: { flexDirection: 'row', gap: 12, marginBottom: 24 },
-    infoItem: { flex: 1, backgroundColor: '#16162A', borderRadius: 12, padding: 12 },
-    infoLabel: { fontSize: 12, color: '#666', marginBottom: 4 },
-    infoValue: { fontSize: 16, color: '#FFF', fontWeight: '600' },
-    transcriptContainer: { backgroundColor: '#16162A', borderRadius: 16, padding: 16 },
-    transcriptEntry: { marginBottom: 16 },
-    roleLabel: { fontSize: 10, fontWeight: '800', marginBottom: 4 },
-    aiRole: { color: '#6C5CE7' },
-    callerRole: { color: '#00CEC9' },
-    transcriptText: { color: '#DDD', fontSize: 15, lineHeight: 22 },
-    emptyText: { color: '#555', fontStyle: 'italic', textAlign: 'center' },
-    footerActions: { gap: 12, marginTop: 10, marginBottom: 40 },
-    shareBtn: { backgroundColor: '#6C5CE7', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
-    btnText: { color: '#FFF', fontWeight: '700', fontSize: 16 },
+    emoji: { fontSize: 44 },
+    callerName: { fontSize: 26, fontWeight: '800', color: '#FFF', marginBottom: 6 },
+    callerNumber: { fontSize: 15, color: '#666', marginBottom: 16, letterSpacing: 0.5 },
+    badgeRow: { flexDirection: 'row', gap: 10 },
+    badge: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20 },
+    badgeText: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase' },
+    card: { backgroundColor: '#121225', borderRadius: 24, padding: 20, marginBottom: 32, borderWidth: 1, borderColor: '#1E1E35' },
+    cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+    cardTitle: { fontSize: 14, fontWeight: '800', color: '#6C5CE7', textTransform: 'uppercase', letterSpacing: 1 },
+    dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#333', marginHorizontal: 8 },
+    durationText: { fontSize: 12, color: '#555' },
+    summaryText: { fontSize: 17, color: '#EEE', lineHeight: 26, fontWeight: '500' },
+    actionBox: { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: '#1E1E35' },
+    actionLabel: { fontSize: 11, color: '#00CEC9', fontWeight: '800', marginBottom: 6, letterSpacing: 0.5 },
+    actionText: { fontSize: 15, color: '#AAA', lineHeight: 22 },
+    section: { marginBottom: 32 },
+    sectionTitle: { fontSize: 18, fontWeight: '800', color: '#FFF', marginBottom: 20 },
+    transcriptContainer: { gap: 20 },
+    bubbleWrapper: { maxWidth: '85%', marginBottom: 4 },
+    aiWrapper: { alignSelf: 'flex-start' },
+    callerWrapper: { alignSelf: 'flex-end' },
+    bubble: { padding: 16, borderRadius: 20 },
+    aiBubble: { backgroundColor: '#1A1A35', borderBottomLeftRadius: 4, borderWidth: 1, borderColor: '#232345' },
+    callerBubble: { backgroundColor: '#6C5CE7', borderBottomRightRadius: 4 },
+    transcriptText: { fontSize: 15, lineHeight: 22 },
+    aiText: { color: '#EEE' },
+    callerText: { color: '#FFF', fontWeight: '500' },
+    roleLabel: { fontSize: 10, color: '#555', marginTop: 6, fontWeight: '700', marginHorizontal: 4 },
+    emptyTranscript: { padding: 30, alignItems: 'center', backgroundColor: '#121225', borderRadius: 20 },
+    emptyText: { color: '#444', fontStyle: 'italic', fontSize: 14 },
+    footerActions: { gap: 16, marginBottom: 40 },
+    shareBtn: { backgroundColor: '#FFF', paddingVertical: 18, borderRadius: 18, alignItems: 'center', shadowColor: '#FFF', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8 },
+    btnText: { color: '#000', fontWeight: '800', fontSize: 16 },
     deleteBtn: { paddingVertical: 14, alignItems: 'center' },
-    deleteBtnText: { color: '#FF7675', fontWeight: '600' },
+    deleteBtnText: { color: '#FF7675', fontWeight: '700', fontSize: 14 },
 });

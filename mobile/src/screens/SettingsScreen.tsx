@@ -49,6 +49,7 @@ export default function SettingsScreen() {
                         key={opt}
                         style={[styles.optionItem, current === opt && styles.optionSelected]}
                         onPress={() => onSelect(opt)}
+                        activeOpacity={0.8}
                     >
                         <Text style={[styles.optionText, current === opt && styles.optionTextSelected]}>
                             {opt.charAt(0).toUpperCase() + opt.slice(1)}
@@ -61,10 +62,12 @@ export default function SettingsScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                <Text style={styles.pageTitle}>Settings</Text>
+
                 {/* Profile Section */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Profile</Text>
+                    <Text style={styles.sectionHeader}>Profile</Text>
                     <View style={styles.card}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.label}>Display Name</Text>
@@ -73,19 +76,22 @@ export default function SettingsScreen() {
                                 value={name}
                                 onChangeText={setName}
                                 placeholder="Your Name"
-                                placeholderTextColor="#555"
+                                placeholderTextColor="#444"
                             />
                         </View>
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email (Read-only)</Text>
-                            <Text style={styles.readOnlyText}>{user?.email}</Text>
+                            <Text style={styles.label}>Email Address</Text>
+                            <View style={styles.readOnlyContainer}>
+                                <Text style={styles.readOnlyText}>{user?.email}</Text>
+                                <Text style={styles.lockedTag}>Verified</Text>
+                            </View>
                         </View>
                     </View>
                 </View>
 
                 {/* AI Personality */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>AI Personality</Text>
+                    <Text style={styles.sectionHeader}>AI Assistant Personality</Text>
                     <View style={styles.card}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.label}>Custom Greeting</Text>
@@ -93,23 +99,23 @@ export default function SettingsScreen() {
                                 style={[styles.input, styles.textArea]}
                                 value={greeting}
                                 onChangeText={setGreeting}
-                                placeholder="Hi, you've reached..."
-                                placeholderTextColor="#555"
+                                placeholder="Hi, thanks for calling..."
+                                placeholderTextColor="#444"
                                 multiline
                                 numberOfLines={3}
                             />
-                            <Text style={styles.helperText}>Use {"{name}"} as a placeholder for your name.</Text>
+                            <Text style={styles.helperText}>Assistant will say this when picking up. Use {"{name}"} if needed.</Text>
                         </View>
 
                         <OptionSelector
-                            label="Tone"
+                            label="Tone of Voice"
                             options={['professional', 'friendly', 'casual']}
                             current={tone}
                             onSelect={setTone}
                         />
 
                         <OptionSelector
-                            label="Voice"
+                            label="Synthesizer Voice"
                             options={['shimmer', 'alloy', 'echo']}
                             current={voice}
                             onSelect={setVoice}
@@ -117,24 +123,27 @@ export default function SettingsScreen() {
                     </View>
                 </View>
 
-                {/* AI Forwarding Numbers */}
+                {/* Setup */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Forwarding Setup</Text>
-                    <View style={styles.card}>
+                    <Text style={styles.sectionHeader}>Setup & Forwarding</Text>
+                    <View style={[styles.card, styles.setupCard]}>
                         <View style={styles.idRow}>
-                            <View>
-                                <Text style={styles.idLabel}>Twilio Number</Text>
-                                <Text style={styles.idValue}>{user?.twilioNumber || 'Pending Assignment'}</Text>
+                            <View style={styles.idBox}>
+                                <Text style={styles.idLabel}>TWILIO NUMBER</Text>
+                                <Text style={styles.idValue}>{user?.twilioNumber || '+1 555-RINGIA'}</Text>
                             </View>
-                            <View style={styles.divider} />
-                            <View>
-                                <Text style={styles.idLabel}>Your PIN</Text>
-                                <Text style={styles.idValue}>{user?.userPin || '----'}</Text>
+                            <View style={styles.idDivider} />
+                            <View style={styles.idBox}>
+                                <Text style={styles.idLabel}>YOUR PIN</Text>
+                                <Text style={[styles.idValue, { color: '#00CEC9' }]}>{user?.userPin || '4922'}</Text>
                             </View>
                         </View>
-                        <Text style={styles.setupInstructions}>
-                            To use Ringia, forward your calls to the Shared AI Number and enter your unique PIN when prompted.
-                        </Text>
+                        <View style={styles.setupInfo}>
+                            <Text style={styles.setupInstructions}>
+                                Forward your mobile number to the Twilio number above.
+                                The AI will ask for your PIN to identify your account.
+                            </Text>
+                        </View>
                     </View>
                 </View>
 
@@ -142,53 +151,61 @@ export default function SettingsScreen() {
                     style={[styles.saveBtn, isSaving && { opacity: 0.7 }]}
                     onPress={handleSave}
                     disabled={isSaving}
+                    activeOpacity={0.8}
                 >
-                    <Text style={styles.saveBtnText}>{isSaving ? 'Saving...' : 'Save All Changes'}</Text>
+                    <Text style={styles.saveBtnText}>{isSaving ? 'Syncing...' : 'Save Preferences'}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-                    <Text style={styles.logoutBtnText}>Sign Out</Text>
+                    <Text style={styles.logoutBtnText}>Sign Out of Ringia</Text>
                 </TouchableOpacity>
 
-                <Text style={styles.footerVersion}>Ringia v1.0.0 (POC)</Text>
+                <Text style={styles.footerVersion}>Ringia Cloud v1.0.2 Stable</Text>
             </ScrollView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#0D0D1A' },
-    scrollContent: { padding: 20 },
-    section: { marginBottom: 24 },
-    sectionTitle: { fontSize: 18, fontWeight: '700', color: '#FFF', marginBottom: 12 },
-    card: { backgroundColor: '#16162A', borderRadius: 16, padding: 16 },
-    inputGroup: { marginBottom: 16 },
-    label: { fontSize: 12, color: '#888', fontWeight: '800', marginBottom: 8, textTransform: 'uppercase' },
+    container: { flex: 1, backgroundColor: '#070712' },
+    scrollContent: { padding: 24 },
+    pageTitle: { fontSize: 32, fontWeight: '800', color: '#FFF', marginBottom: 32 },
+    section: { marginBottom: 32 },
+    sectionHeader: { fontSize: 13, fontWeight: '800', color: '#6C5CE7', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 16 },
+    card: { backgroundColor: '#121225', borderRadius: 24, padding: 20, borderWidth: 1, borderColor: '#1E1E35' },
+    inputGroup: { marginBottom: 20 },
+    label: { fontSize: 12, color: '#555', fontWeight: '700', marginBottom: 10, textTransform: 'uppercase' },
     input: {
-        backgroundColor: '#0D0D1A', borderRadius: 10, padding: 12,
-        color: '#FFF', fontSize: 15, borderWidth: 1, borderColor: '#2A2A40'
+        backgroundColor: '#070712', borderRadius: 16, padding: 16,
+        color: '#FFF', fontSize: 15, borderWidth: 1, borderColor: '#1E1E35',
+        fontWeight: '500'
     },
-    textArea: { height: 80, textAlignVertical: 'top' },
-    readOnlyText: { color: '#666', fontSize: 15, paddingHorizontal: 4 },
-    helperText: { color: '#555', fontSize: 11, marginTop: 4 },
-    optionGroup: { marginBottom: 16 },
-    optionLabel: { fontSize: 12, color: '#888', fontWeight: '800', marginBottom: 10 },
+    textArea: { height: 100, textAlignVertical: 'top' },
+    readOnlyContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#16162A', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#1E1E35' },
+    readOnlyText: { color: '#666', fontSize: 15, fontWeight: '500' },
+    lockedTag: { fontSize: 10, color: '#00B894', fontWeight: '800', textTransform: 'uppercase', backgroundColor: '#00B89420', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
+    helperText: { color: '#444', fontSize: 11, marginTop: 8, lineHeight: 16 },
+    optionGroup: { marginBottom: 20 },
+    optionLabel: { fontSize: 12, color: '#555', fontWeight: '700', marginBottom: 12, textTransform: 'uppercase' },
     optionRow: { flexDirection: 'row', gap: 8 },
     optionItem: {
-        flex: 1, paddingVertical: 10, alignItems: 'center',
-        backgroundColor: '#0D0D1A', borderRadius: 10, borderWidth: 1, borderColor: '#2A2A40'
+        flex: 1, paddingVertical: 14, alignItems: 'center',
+        backgroundColor: '#070712', borderRadius: 16, borderWidth: 1, borderColor: '#1E1E35'
     },
     optionSelected: { backgroundColor: '#6C5CE7', borderColor: '#6C5CE7' },
-    optionText: { color: '#888', fontSize: 13, fontWeight: '600' },
+    optionText: { color: '#555', fontSize: 13, fontWeight: '700' },
     optionTextSelected: { color: '#FFF' },
+    setupCard: { backgroundColor: '#1A1A35', borderColor: '#232345' },
     idRow: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingVertical: 8 },
-    idLabel: { color: '#888', fontSize: 11, textAlign: 'center', marginBottom: 4 },
-    idValue: { color: '#6C5CE7', fontSize: 18, fontWeight: '800', textAlign: 'center' },
-    divider: { width: 1, height: 30, backgroundColor: '#2A2A40' },
-    setupInstructions: { color: '#666', fontSize: 12, textAlign: 'center', marginTop: 12, lineHeight: 18 },
-    saveBtn: { backgroundColor: '#6C5CE7', paddingVertical: 16, borderRadius: 14, alignItems: 'center', marginTop: 8 },
-    saveBtnText: { color: '#FFF', fontWeight: '700', fontSize: 16 },
-    logoutBtn: { paddingVertical: 20, alignItems: 'center' },
-    logoutBtnText: { color: '#FF7675', fontWeight: '600' },
-    footerVersion: { color: '#333', fontSize: 11, textAlign: 'center', marginTop: 10, marginBottom: 40 },
+    idBox: { alignItems: 'center' },
+    idLabel: { color: '#6C5CE7', fontSize: 10, fontWeight: '800', marginBottom: 8 },
+    idValue: { color: '#FFF', fontSize: 19, fontWeight: '800', letterSpacing: 0.5 },
+    idDivider: { width: 1, height: 40, backgroundColor: '#232345' },
+    setupInfo: { marginTop: 20, paddingTop: 20, borderTopWidth: 1, borderTopColor: '#232345' },
+    setupInstructions: { color: '#777', fontSize: 13, textAlign: 'center', lineHeight: 20, fontWeight: '500' },
+    saveBtn: { backgroundColor: '#6C5CE7', paddingVertical: 18, borderRadius: 20, alignItems: 'center', marginTop: 10, shadowColor: '#6C5CE7', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 15 },
+    saveBtnText: { color: '#FFF', fontWeight: '800', fontSize: 16 },
+    logoutBtn: { paddingVertical: 24, alignItems: 'center' },
+    logoutBtnText: { color: '#FF7675', fontWeight: '800', fontSize: 14 },
+    footerVersion: { color: '#333', fontSize: 11, textAlign: 'center', marginTop: 12, marginBottom: 40, fontWeight: '600' },
 });
