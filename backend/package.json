@@ -1,5 +1,5 @@
 {
-  "name": "ringia-backend",
+  "name": "vexa-backend",
   "version": "1.0.0",
   "description": "Ringia AI Call Assistant Backend",
   "main": "src/index.js",

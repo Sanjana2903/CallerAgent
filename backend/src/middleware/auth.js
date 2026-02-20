@@ -15,7 +15,20 @@ async function authenticate(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.userId).select('-password');
+
+        let user;
+        // Fallback to mock user if DB is disconnected
+        if (mongoose.connection.readyState !== 1) {
+            console.warn('[Auth] Database disconnected. Using mock user for session.');
+            user = {
+                _id: decoded.userId || '6997698ded7ba4d315608629',
+                name: 'Sanjana Bathula (Demo)',
+                email: 'sanjanab@example.com',
+                twilioNumber: '+1 863 349 3216'
+            };
+        } else {
+            user = await User.findById(decoded.userId).select('-password');
+        }
 
         if (!user) {
             return res.status(401).json({ error: 'User not found' });

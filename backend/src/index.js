@@ -87,7 +87,7 @@ if (process.env.NODE_ENV !== 'test') {
 // ========================
 app.get('/', (req, res) => {
     res.json({
-        name: 'Ringia API',
+        name: 'Vexa API',
         version: '1.0.0',
         status: 'OK',
         message: 'Your AI Call Assistant Backend 🤖📞',
@@ -153,7 +153,7 @@ async function startServer() {
         // Start HTTP server
         server.listen(PORT, () => {
             console.log(`
-🚀 Ringia Backend running on port ${PORT}
+🚀 Vexa API running on port ${PORT}
 📡 Socket.io ready for real-time connections
 🎙️ WebSocket ready for Twilio media streams at /voice/media-stream
 
@@ -175,7 +175,7 @@ Make sure to set these in your Twilio console:
         console.warn('Proceeding to start server for demonstration...');
 
         server.listen(PORT, () => {
-            console.log(`🚀 Ringia Backend started in OFFLINE/DEMO mode on port ${PORT}`);
+            console.log(`🚀 Vexa Backend started in OFFLINE/DEMO mode on port ${PORT}`);
         });
     }
 }

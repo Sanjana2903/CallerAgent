@@ -64,7 +64,7 @@ export default function HomeScreen({ navigation }: any) {
                     <Text style={styles.welcomeText}>Hello, {user?.name?.split(' ')[0] || 'User'}! 👋</Text>
                     <Text style={styles.subWelcome}>Your assistant is active and standing by.</Text>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.profileBtn}>
+                <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.profileBtn}>
                     <Text style={styles.profileEmoji}>👤</Text>
                 </TouchableOpacity>
             </View>

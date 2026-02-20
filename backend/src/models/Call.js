@@ -77,7 +77,6 @@ const callSchema = new mongoose.Schema({
 // Index for quick lookups
 callSchema.index({ userId: 1, createdAt: -1 });
 callSchema.index({ callerNumber: 1, userId: 1 });
-callSchema.index({ callSid: 1 });
 callSchema.index({ status: 1 });
 
 module.exports = mongoose.model('Call', callSchema);

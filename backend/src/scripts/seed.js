@@ -73,6 +73,14 @@ async function seed() {
         await User.deleteMany({ email: DUMMY_USER.email });
         console.log('Cleared existing test user');
 
+        // Drop legacy indexes if they exist (to avoid E11000 errors from abandoned fields)
+        try {
+            await Call.collection.dropIndexes();
+            console.log('Dropped legacy indexes from calls collection');
+        } catch (e) {
+            console.log('No indexes to drop or collection empty');
+        }
+
         // Create user
         const hashedPassword = await bcrypt.hash(DUMMY_USER.password, 12);
         const user = new User({

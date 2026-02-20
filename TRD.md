@@ -1,4 +1,4 @@
-# Technical Requirement Document (TRD): Ringia 🏗️⚙️
+# Technical Requirement Document (TRD): Vexa 🏗️⚙️
 
 ## 1. Tech Stack
 - **Mobile**: React Native (TypeScript), React Navigation, Zustand (State Management).
@@ -13,7 +13,7 @@
 
 ### 2.1 Call Flow Architecture
 1. **Inbound Call**: Twilio receives a call and triggers a TwiML webhook.
-2. **Media Stream**: Twilio opens a WebSocket connection to the Ringia backend to stream raw audio.
+2. **Media Stream**: Twilio opens a WebSocket connection to the Vexa backend to stream raw audio.
 3. **AI Processing**: Backend sends audio/text to Azure OpenAI GPT-4o Realtime API.
 4. **Live Update**: Backend pushes transcripts to the Mobile App via Socket.io.
 5. **Takeover**: Backend issues a TwiML redirect to Twilio to bridge the call to the mobile client or a secondary number.

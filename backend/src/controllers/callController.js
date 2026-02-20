@@ -15,6 +15,31 @@ async function getCallHistory(req, res) {
     const userId = req.user._id;
 
     try {
+        if (mongoose.connection.readyState !== 1) {
+            console.warn('[Calls] Database disconnected. Returning mock history.');
+            return res.json({
+                calls: [
+                    {
+                        _id: 'mock1',
+                        callerName: 'Mom',
+                        callerNumber: '+1 415-9988',
+                        status: 'ended',
+                        analysis: { intent: 'personal.family', summary: 'Mom called to check on dinner.' },
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        _id: 'mock2',
+                        callerName: 'Amazon Delivery',
+                        callerNumber: '+1 800-4455',
+                        status: 'ended',
+                        analysis: { intent: 'logistics.delivery', summary: 'Package left at the door.' },
+                        createdAt: new Date(Date.now() - 3600000).toISOString()
+                    }
+                ],
+                pagination: { total: 2, page: 1, pages: 1, limit: parseInt(limit) }
+            });
+        }
+
         const filter = { userId };
 
         if (intent) filter['analysis.intent'] = intent;
@@ -55,6 +80,9 @@ async function getActiveCalls(req, res) {
     const userId = req.user._id;
 
     try {
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ activeCalls: [] });
+        }
         const activeCalls = await Call.find({
             userId,
             status: { $in: ['ringing', 'active', 'takeover_requested', 'takeover_active'] }

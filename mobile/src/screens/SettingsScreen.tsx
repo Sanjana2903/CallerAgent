@@ -63,31 +63,7 @@ export default function SettingsScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                <Text style={styles.pageTitle}>Settings</Text>
-
-                {/* Profile Section */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionHeader}>Profile</Text>
-                    <View style={styles.card}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Display Name</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={name}
-                                onChangeText={setName}
-                                placeholder="Your Name"
-                                placeholderTextColor="#444"
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email Address</Text>
-                            <View style={styles.readOnlyContainer}>
-                                <Text style={styles.readOnlyText}>{user?.email}</Text>
-                                <Text style={styles.lockedTag}>Verified</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
+                <Text style={styles.pageTitle}>Vexa Tuning</Text>
 
                 {/* AI Personality */}
                 <View style={styles.section}>
@@ -118,19 +94,19 @@ export default function SettingsScreen() {
                             label="Synthesizer Voice"
                             options={['shimmer', 'alloy', 'echo']}
                             current={voice}
-                            onSelect={setVoice}
+                            onSelect={setTone}
                         />
                     </View>
                 </View>
 
-                {/* Setup */}
+                {/* Forwarding Setup */}
                 <View style={styles.section}>
                     <Text style={styles.sectionHeader}>Setup & Forwarding</Text>
                     <View style={[styles.card, styles.setupCard]}>
                         <View style={styles.idRow}>
                             <View style={styles.idBox}>
                                 <Text style={styles.idLabel}>TWILIO NUMBER</Text>
-                                <Text style={styles.idValue}>{user?.twilioNumber || '+1 555-RINGIA'}</Text>
+                                <Text style={styles.idValue}>{user?.twilioNumber || '+1 863-RINGIA'}</Text>
                             </View>
                             <View style={styles.idDivider} />
                             <View style={styles.idBox}>
@@ -140,8 +116,8 @@ export default function SettingsScreen() {
                         </View>
                         <View style={styles.setupInfo}>
                             <Text style={styles.setupInstructions}>
-                                Forward your mobile number to the Twilio number above.
-                                The AI will ask for your PIN to identify your account.
+                                Forward your mobile number to the AI number above.
+                                Use your PIN to verify your identity during the call.
                             </Text>
                         </View>
                     </View>

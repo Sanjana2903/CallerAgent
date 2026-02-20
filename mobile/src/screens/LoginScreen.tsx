@@ -37,7 +37,7 @@ export default function LoginScreen({ navigation }: any) {
                 {/* Logo */}
                 <View style={styles.logoContainer}>
                     <Text style={styles.logoIcon}>📞</Text>
-                    <Text style={styles.logoText}>Ringia</Text>
+                    <Text style={styles.title}>Welcome to Vexa</Text>
                     <Text style={styles.tagline}>Your AI Call Assistant</Text>
                 </View>
 

@@ -37,7 +37,7 @@ export default function RegisterScreen({ navigation }: any) {
             <StatusBar barStyle="light-content" backgroundColor="#0D0D1A" />
             <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
                 <View style={styles.header}>
-                    <Text style={styles.logo}>📞 Ringia</Text>
+                    <Text style={styles.title}>Join Vexa</Text>
                     <Text style={styles.title}>Create Account</Text>
                     <Text style={styles.subtitle}>Set up your AI call assistant in minutes</Text>
                 </View>

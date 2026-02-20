@@ -1,7 +1,7 @@
-# Product Requirement Document (PRD): Ringia 🤖📞
+# Product Requirement Document (PRD): Vexa 🤖📞
 
 ## 1. Project Overview
-Ringia is an AI-powered personal call assistant that acts as a proactive gatekeeper for your phone. It intelligently intercepts calls, engages in natural conversation to identify intent, and provides real-time control to the user.
+Vexa is an AI-powered personal call assistant that acts as a proactive gatekeeper for your phone. It intelligently intercepts calls, engages in natural conversation to identify intent, and provides real-time control to the user.
 
 ## 2. Advanced Feature Specifications
 

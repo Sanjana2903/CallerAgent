@@ -1,6 +1,6 @@
 // API base URL — change this to your backend URL or ngrok URL
-export const API_BASE_URL = 'https://5bee-2401-4900-889d-eba7-c930-2466-9af-802.ngrok-free.app';
-export const SOCKET_URL = 'https://5bee-2401-4900-889d-eba7-c930-2466-9af-802.ngrok-free.app';
+export const API_BASE_URL = 'https://4b73-2401-4900-9386-38a1-29ce-3768-8420-bbf.ngrok-free.app';
+export const SOCKET_URL = 'https://4b73-2401-4900-9386-38a1-29ce-3768-8420-bbf.ngrok-free.app';
 
 // Intent icons and colors for UI (Vibrant Palette)
 export const INTENT_CONFIG: Record<string, { label: string; emoji: string; color: string }> = {

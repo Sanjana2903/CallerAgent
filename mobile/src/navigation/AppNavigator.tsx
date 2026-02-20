@@ -10,6 +10,8 @@ import HomeScreen from '../screens/HomeScreen';
 import LiveCallScreen from '../screens/LiveCallScreen';
 import CallDetailScreen from '../screens/CallDetailScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ContactsScreen from '../screens/ContactsScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,9 +33,14 @@ function MainTabs() {
                 options={{ title: 'Call History', tabBarLabel: 'Calls' }}
             />
             <Tab.Screen
-                name="Settings"
+                name="Contacts"
+                component={ContactsScreen}
+                options={{ title: 'AI Contacts' }}
+            />
+            <Tab.Screen
+                name="Preferences"
                 component={SettingsScreen}
-                options={{ title: 'Preferences' }}
+                options={{ title: 'AI Tuning' }}
             />
         </Tab.Navigator>
     );
@@ -54,6 +61,15 @@ export default function AppNavigator() {
                 // Main Stack
                 <Stack.Group>
                     <Stack.Screen name="Main" component={MainTabs} />
+                    <Stack.Screen
+                        name="Profile"
+                        component={ProfileScreen}
+                        options={{
+                            headerShown: false,
+                            gestureDirection: 'horizontal',
+                            presentation: 'card',
+                        }}
+                    />
                     <Stack.Screen
                         name="LiveCall"
                         component={LiveCallScreen}
