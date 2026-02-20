@@ -12,12 +12,12 @@ const bcrypt = require('bcryptjs');
 const MONGODB_URI = process.env.MONGODB_URI;
 
 const DUMMY_USER = {
-    name: 'Test User',
-    email: 'test@ringia.ai',
-    password: 'password123',
-    phoneNumber: '+1234567890',
-    twilioNumber: '+18881234567',
-    userPin: '1234'
+    name: 'Sanjana Bathula',
+    email: 'sanjanab@example.com',
+    password: 'Password123!',
+    phoneNumber: '+1 863 349 3216',
+    twilioNumber: '+1 863 349 3216',
+    userPin: '4922'
 };
 
 const DUMMY_CALLS = [
@@ -86,10 +86,10 @@ async function seed() {
         await Call.deleteMany({ userId: user._id });
 
         // Add dummy calls
-        const callsWithUserId = DUMMY_CALLS.map(call => ({
+        const callsWithUserId = DUMMY_CALLS.map((call, index) => ({
             ...call,
             userId: user._id,
-            callSid: 'CA' + Math.random().toString(36).substring(7)
+            callSid: 'CA' + Date.now().toString(36) + index
         }));
 
         await Call.insertMany(callsWithUserId);
